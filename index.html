@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        canvas {
+            background-image: url('./3.jpg');
+            border: 1px solid #000;
+            background-position: center;
+            background-size: 100% 100%;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="300"></canvas>
+    <script>
+        var oCanvas = document.getElementById('canvas');
+        var ctx = oCanvas.getContext('2d');
+        var width = oCanvas.width;
+        var height = oCanvas.height;
+        ctx.fillStyle = '#ccc';
+        ctx.fillRect(0, 0, width, height);
+        var pointX,pointY;
+        document.addEventListener('mousedown', mouseDown, false);
+        function mouseDown (e) {
+            pointX = e.clientX - oCanvas.offsetLeft;
+            pointY = e.clientY - oCanvas.offsetTop;
+            oCanvas.addEventListener('mousemove', mouseMove, false);
+            document.addEventListener('mouseup',mouseUp,false);
+        }
+        function mouseMove(e){
+            var nowPointX = e.clientX - oCanvas.offsetLeft;
+            var nowPointY = e.clientY - oCanvas.offsetTop;
+            ctx.beginPath();
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.moveTo(pointX,pointY);
+            ctx.lineTo(nowPointX,nowPointY);
+            ctx.lineWidth=40;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            pointX = nowPointX;
+            pointY = nowPointY;
+        }
+        function mouseUp(e){
+            oCanvas.removeEventListener('mousemove',mouseMove);
+            clearAll();
+        }
+        function clearAll(){
+            var data = ctx.getImageData(0, 0, width, height);
+            var len = data.data.length;
+            var count = 0;
+            for(var i = 0;i<len;i+=4){
+                if(data.data[i] == 0){
+                    count++;
+                }
+            }
+            if(count>width*height*0.6){
+                ctx.clearRect(0, 0, width, height);
+            }
+        }
+    </script>
+</body>
+</html>
